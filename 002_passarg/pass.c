@@ -42,7 +42,7 @@ module_param_cb(int_param, &int_param_ops, &int_param, S_IRGRP | S_IWGRP | S_IRU
 /*init and exit function*/ 
 static int __init hello_world_init(void)
 {
-    printk(KERN_INFO "Kernel Module Inserted Successfully...\n");
+    printk(KERN_INFO "Kernel Module loaded successfully\n");
     printk(KERN_INFO "Kernel Module value:%d\n",value);
     printk(KERN_INFO "Kernel Module name:%s\n",name);
 
@@ -54,7 +54,7 @@ static int __init hello_world_init(void)
 
 static void __exit hello_world_exit(void)
 {
-    printk(KERN_INFO "Module Removed Successfully...\n");
+    printk(KERN_INFO "Module unloaded Successfully...\n");
 }
 
 /*Register init and exit function*/
@@ -64,5 +64,5 @@ module_exit(hello_world_exit);
 /*module information*/
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("collect and create");
-MODULE_DESCRIPTION("hello world module");
+MODULE_DESCRIPTION("Passing Arguments");
 MODULE_VERSION("2:1.0");
