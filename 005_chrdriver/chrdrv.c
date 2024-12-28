@@ -67,10 +67,12 @@ static int __init hello_world_init(void)
 
     // Initialize the cdev structure and add it to the system
     cdev_init(&new_cdev, &fops);
-    if((cdev_add(&new_cdev, MKDEV(major_num,0),1))<0)
+    new_cdev.owner = THIS_MODULE;
+    ret = cdev_add(&new_cdev, MKDEV(major_num,0),1);
+    if(ret<0)
     {
 	    pr_err("unable to create cdev add \n");
-	    goto class_fail;
+	    goto cdev_fail;
     }
 
     // Create a device class
@@ -101,6 +103,8 @@ static int __init hello_world_init(void)
 device_fail:
     // Cleanup on device creation failure
 	class_destroy(dev_class);
+cdev_fail:
+     cdev_del(&new_cdev);
 class_fail:
     // Cleanup on class creation failure
 	unregister_chrdev(major_num, DEVICE_NAME);
@@ -152,6 +156,7 @@ static void __exit hello_world_exit(void)
 {
     kfree(local_buffer); // Free allocated memory
     device_destroy(dev_class, MKDEV(major_num,0)); // Destroy the device
+    cdev_del(&new_cdev); // delete the cdev
     class_unregister(dev_class); // Unregister the device class
     class_destroy(dev_class); // Destroy the device class
     unregister_chrdev(major_num,DEVICE_NAME); // Unregister the character device
